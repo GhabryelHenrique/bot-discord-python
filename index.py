@@ -1,5 +1,4 @@
 #Import Libs
-from re import A
 import discord
 import feedparser
 from discord.ext import commands, tasks
