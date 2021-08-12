@@ -4,7 +4,6 @@ import feedparser
 from discord.ext import commands, tasks
 from bs4 import BeautifulSoup
 import credentials
-import urllib.request 
 
 #Define prefix to Bot
 client = commands.Bot(command_prefix = '!', case_insensitive = True)
