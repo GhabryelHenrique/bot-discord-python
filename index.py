@@ -41,9 +41,13 @@ class MyClient(discord.Client):
         #Translate to HTML to normal language
         soup = BeautifulSoup(markup=entry.summary, features="lxml")
 
+        date_NewsFeed = datetime.strptime(entry.published[5:-6], "%d %b %Y %H:%M:%S")
+        locale.setlocale(locale.LC_ALL, 'pt_BR.utf8')
+        date_pt_BR = date_NewsFeed.strftime('%A, %d %b %Y %H:%M:%S')
+        
         #set variable (optional)
         titulo = entry.title
-        data = entry.published[:-6]
+        data = date_pt_BR
         link = entry.link
         texto = soup.get_text()[:-51]
         await channel1.send('RSS Atualizado!')
