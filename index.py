@@ -3,6 +3,10 @@ import discord
 from discord.ext import commands, tasks
 import credentials
 import sopa
+from bs4 import BeautifulSoup
+import feedparser
+import datetime
+import locale
 
 intents = discord.Intents.default()
 intents.members = True
@@ -28,14 +32,30 @@ class MyClient(discord.Client):
     @tasks.loop(minutes=60) # task runs every X seconds
     async def noticias(self):
         channel = self.get_channel(credentials.canal)
-        channel1 = self.get_channel(credentials.log) # channel ID 
+        channel1 = self.get_channel(credentials.log) # channel ID
+
+        #Set to RSS
+        NewsFeed = feedparser.parse(credentials.rss)
+        entry = NewsFeed.entries[0]
+        
+        #Translate to HTML to normal language
+        soup = BeautifulSoup(markup=entry.summary, features="lxml")
+
+        #set variable (optional)
+        titulo = entry.title
+        data = entry.published[:-6]
+        link = entry.link
+        texto = soup.get_text()[:-51]
+        await channel1.send('RSS Atualizado!')
+        print('RSS Atualizado!')
+
         await channel.send('**---------**')
-        await channel.send(sopa.data)
-        await channel.send(sopa.titulo)
+        await channel.send(data)
+        await channel.send(titulo)
         await channel.send('-')
-        await channel.send(sopa.texto)
+        await channel.send(texto)
         await channel.send('**----Link da noticia----**')
-        await channel.send(sopa.link)
+        await channel.send(link)
         await channel1.send('Noticia Enviada!')
         print('Noticia Enviada!')
      
@@ -43,7 +63,6 @@ class MyClient(discord.Client):
     async def before_my_task(self):
         await self.wait_until_ready() # wait for the bot to login
 
-    
     async def on_message(self, message):
         # we do not want the bot to reply to itself
         if message.author.id == self.user.id:
@@ -54,4 +73,4 @@ class MyClient(discord.Client):
 
 #Start this Bot
 client = MyClient()
-client.run(credentials.token) #Id do Bot
+client.run(credentials.token) #Bot ID
