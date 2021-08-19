@@ -2,7 +2,6 @@
 import discord
 from discord.ext import commands, tasks
 import credentials
-import sopa
 from bs4 import BeautifulSoup
 import feedparser
 import datetime
