@@ -4,7 +4,7 @@ from discord.ext import commands, tasks
 import credentials
 from bs4 import BeautifulSoup
 import feedparser
-import datetime
+from datetime import datetime
 import locale
 
 intents = discord.Intents.default()
@@ -33,34 +33,41 @@ class MyClient(discord.Client):
         channel = self.get_channel(credentials.canal)
         channel1 = self.get_channel(credentials.log) # channel ID
 
-        #Set to RSS
+        #transform HTML to normal language
         NewsFeed = feedparser.parse(credentials.rss)
         entry = NewsFeed.entries[0]
-        
-        #Translate to HTML to normal language
         soup = BeautifulSoup(markup=entry.summary, features="lxml")
 
+        #trasform data to format Brazilian
         date_NewsFeed = datetime.strptime(entry.published[5:-6], "%d %b %Y %H:%M:%S")
         locale.setlocale(locale.LC_ALL, 'pt_BR.utf8')
         date_pt_BR = date_NewsFeed.strftime('%A, %d %b %Y %H:%M:%S')
-        
-        #set variable (optional)
-        titulo = entry.title
+
+        #Define variables (opitional)
+        title = entry.title
         data = date_pt_BR
         link = entry.link
-        texto = soup.get_text()[:-51]
-        await channel1.send('RSS Atualizado!')
+        text = soup.get_text()[:2000] #The discord is limited to 2000 characters per message, if you don't put this limitation the bot returns an error
+        
+        #Confirm to RSS is Ready
+        await channel1.send('RSS Ready!')
         print('RSS Atualizado!')
 
-        await channel.send('**---------**')
-        await channel.send(data)
-        await channel.send(titulo)
-        await channel.send('-')
-        await channel.send(texto)
-        await channel.send('**----Link da noticia----**')
-        await channel.send(link)
-        await channel1.send('Noticia Enviada!')
-        print('Noticia Enviada!')
+        #If there is an error in the text, there is this redundancy system
+        try:
+            await channel.send(data)
+            await channel.send(title)
+            await channel.send('.')
+            await channel.send(texto)
+            await channel.send('__**Read more at:**__')
+            await channel.send(link)
+            await channel1.send('News Sent Successfully')
+            print('News Sent Successfully!')
+
+        except:
+            await channel.send('__**Não foi possivel escrever a noticia. Em breve tentaremos novamente**__')
+            await channel1.send('Noticia não enviada')
+            print('Noticia not sent')
      
     @noticias.before_loop
     async def before_my_task(self):
