@@ -7,4 +7,4 @@ Discord.py,
 Feedparser,
 DateTime,
 BeautifulSoup,
-Locale,
+Locale
