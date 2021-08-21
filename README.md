@@ -3,8 +3,8 @@ I intend to create more functionalities how to remember when there will be exams
 There are still many possibilities and any suggestion is very welcome. 
 
 Libraries: 
-Discord.py
-Feedparser
-DateTime
-BeautifulSoup
-Locale
+Discord.py,
+Feedparser,
+DateTime,
+BeautifulSoup,
+Locale,
