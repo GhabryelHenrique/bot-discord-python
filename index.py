@@ -4,7 +4,7 @@ from discord.ext import commands, tasks
 import credentials
 from bs4 import BeautifulSoup
 import feedparser
-from datetime import datetime
+from datetime import datetime, timedelta
 import locale
 
 intents = discord.Intents.default()
@@ -38,8 +38,8 @@ class MyClient(discord.Client):
         entry = NewsFeed.entries[0]
         soup = BeautifulSoup(markup=entry.summary, features="lxml")
 
-        #trasform data to format Brazilian
-        date_NewsFeed = datetime.strptime(entry.published[5:-6], "%d %b %Y %H:%M:%S")
+        #trasform data to format Brazilian and UTC-3
+        date_NewsFeed = datetime.strptime(entry.published[5:-6], "%d %b %Y %H:%M:%S") + timedelta(hours = -3)
         locale.setlocale(locale.LC_ALL, 'pt_BR.utf8')
         date_pt_BR = date_NewsFeed.strftime('%A, %d %b %Y %H:%M:%S')
 
@@ -78,8 +78,8 @@ class MyClient(discord.Client):
         if message.author.id == self.user.id:
             return
 
-        if message.content.startswith('!Hellow'):
-            await message.reply('Hellow!', mention_author=True)
+        if message.content.startswith('!Hello'):
+            await message.reply('Hello!', mention_author=True)
 
 #Start this Bot
 client = MyClient()
