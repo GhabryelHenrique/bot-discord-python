@@ -58,7 +58,7 @@ class MyClient(discord.Client):
             await channel.send(data)
             await channel.send(title)
             await channel.send('.')
-            await channel.send(texto)
+            await channel.send(text)
             await channel.send('__**Read more at:**__')
             await channel.send(link)
             await channel1.send('News Sent Successfully')
